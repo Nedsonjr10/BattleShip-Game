@@ -92,12 +92,10 @@ void inserir_navio_frente(NoNavio **cabeca, Navio navio) {
         *cabeca = novo_no;
     }
 }
-
 typedef struct Queue {
     NoEvento *front;
     NoEvento *rear;
 } Queue;
-
 void enqueue(Queue *q, Acao acao) {
     NoEvento *novo_no = criar_no_evento(acao);
     if (q->rear == NULL) {
@@ -107,7 +105,6 @@ void enqueue(Queue *q, Acao acao) {
     q->rear->prox = novo_no;
     q->rear = novo_no;
 }
-
 Acao dequeue(Queue *q) {
     if (q->front == NULL) {
         exit(EXIT_FAILURE);
@@ -118,6 +115,26 @@ Acao dequeue(Queue *q) {
     if (q->front == NULL) {
         q->rear = NULL;
     }
+    free(temp);
+    return acao;
+}
+typedef struct Stack {
+    Acao *top;
+} Stack;
+
+void push(Stack *s, Acao acao) {
+    Acao *nova_acao = criar_acao(acao.pos, acao.acerto);
+    nova_acao->prox = s->top;
+    s->top = nova_acao;
+}
+
+Acao pop(Stack *s) {
+    if (s->top == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    Acao *temp = s->top;
+    Acao acao = *temp;
+    s->top = s->top->prox;
     free(temp);
     return acao;
 }
