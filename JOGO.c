@@ -22,7 +22,6 @@ typedef struct {
     char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
      char tabuleiro_visual[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];  // Mapa visual para que o jogo rode bem
 } Jogador;
-
 typedef struct No {
     Jogador jogador;
     struct No *proximo;
@@ -94,6 +93,35 @@ void inserir_navio_frente(NoNavio **cabeca, Navio navio) {
     }
 }
 
+typedef struct Queue {
+    NoEvento *front;
+    NoEvento *rear;
+} Queue;
+
+void enqueue(Queue *q, Acao acao) {
+    NoEvento *novo_no = criar_no_evento(acao);
+    if (q->rear == NULL) {
+        q->front = q->rear = novo_no;
+        return;
+    }
+    q->rear->prox = novo_no;
+    q->rear = novo_no;
+}
+
+Acao dequeue(Queue *q) {
+    if (q->front == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    NoEvento *temp = q->front;
+    Acao acao = temp->acao;
+    q->front = q->front->prox;
+    if (q->front == NULL) {
+        q->rear = NULL;
+    }
+    free(temp);
+    return acao;
+}
+
 // Função para imprimir o mapa de jogo atual
 void imprimir_tabuleiro(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
     printf("  ");
@@ -101,7 +129,6 @@ void imprimir_tabuleiro(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
         printf("%d ", i);
     }
     printf("\n");
-
     for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
         printf("%d ", i);
         for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
@@ -110,7 +137,6 @@ void imprimir_tabuleiro(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
         printf("\n");
     }
 }
-
 int main() {
     No *jogadores = NULL;  
     TabelaHash tabela_hash = {0};  // Tabela hash para registrar tiros
