@@ -74,3 +74,36 @@ NoEvento* criar_no_evento(Acao acao) {
     novo_no->proximo = NULL;
     return novo_no;
 }
+// Função Hashing
+int hash_posicao(Posicao pos) {
+    return (pos.x * 10 + pos.y) % TAMANHO_HASH;
+}
+
+void registrar_acerto(TabelaHash *tabela, Posicao pos) {
+    int indice = hash_posicao(pos);
+    tabela->acertos[indice] = true;
+}
+
+bool verificar_acerto(TabelaHash *tabela, Posicao pos) {
+    int indice = hash_posicao(pos);
+    return tabela->acertos[indice];
+}
+
+// Tentativa de primeiras lógicas da Lista 
+NoNavio* criar_no_navio(Navio navio) {
+    NoNavio *novo_no = (NoNavio *)malloc(sizeof(NoNavio));
+    novo_no->navio = navio;
+    novo_no->anterior = novo_no->proximo = NULL;
+    return novo_no;
+}
+
+void inserir_navio_frente(NoNavio **cabeca, Navio navio) {
+    NoNavio *novo_no = criar_no_navio(navio);
+    if (*cabeca == NULL) {
+        *cabeca = novo_no;
+    } else {
+        novo_no->proximo = *cabeca;
+        (*cabeca)->anterior = novo_no;
+        *cabeca = novo_no;
+    }
+}
